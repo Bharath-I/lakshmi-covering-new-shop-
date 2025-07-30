@@ -3,10 +3,32 @@
 
 <head>
     <title>Customer Dashboard</title>
-    <link rel="stylesheet" href="/customer-site/index.css" />
+    <link rel="stylesheet" href="/customer-site/dashboardm.css" />
 </head>
 
 <body>
+    <!-- Header with title and dropdown -->
+    <!-- Colorful Dashboard Header -->
+    <div class="dashboard-header">
+        <div class="shop-title">💎 Lakshmi Gold Covering Shop</div>
+
+        <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search for products..." onkeyup="searchProducts()">
+
+        <div class="dropdown-container">
+            <button class="dropdown-btn" onclick="toggleDropdown()">☰</button>
+            <div id="dropdownMenu" class="dropdown-menu">
+                <a href="profile.html">👤 Profile</a>
+                <a href="orders.html">🧾 Orders</a>
+                <a href="logout.html">🚪 Logout</a>
+                <a href="helpcenter.html">❓ Help Center</a>
+                <a href="return.html">🔁 Returns</a>
+                <a href="settings.html">⚙️ Settings</a>
+                <a href="shipping.html">📦 Shipping</a>
+                <a href="delivery.html">🚚 Delivery</a>
+            </div>
+        </div>
+    </div>
+
     <h2>Available Products</h2>
     <div id="productList"></div>
 
@@ -21,6 +43,32 @@
             <hr>
         </a>`; productList.appendChild(div); } }); } loadProducts();
     </script>
+    <script>
+        function toggleDropdown() {
+            const menu = document.getElementById("dropdownMenu");
+            menu.style.display = menu.style.display === "block" ? "none" : "block";
+        }
+
+        // Optional: Hide dropdown when clicking outside
+        window.addEventListener("click", function(e) {
+            const menu = document.getElementById("dropdownMenu");
+            if (!e.target.closest("#dropdownMenu") && !e.target.closest("button")) {
+                menu.style.display = "none";
+            }
+        });
+
+        // Search filter function (update this depending on your product element structure)
+        function searchProducts() {
+            const input = document.getElementById("searchInput").value.toLowerCase();
+            const items = document.querySelectorAll("#productList > div"); // assumes each product is in a div
+
+            items.forEach(item => {
+                const name = item.textContent.toLowerCase();
+                item.style.display = name.includes(input) ? "block" : "none";
+            });
+        }
+    </script>
+
 </body>
 
 </html>
