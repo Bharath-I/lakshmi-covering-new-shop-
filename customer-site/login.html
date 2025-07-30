@@ -3,25 +3,46 @@
 
 <head>
     <title>Login</title>
+    <link rel="stylesheet" href="/customer-site/index.css" />
 </head>
 
 <body>
-    <h2>Login Page</h2>
-    <link rel="stylesheet" href="/customer-site/index.css" />
-
-    <input type="email" id="email" placeholder="Enter your email"><br><br>
-    <input type="password" id="password" placeholder="Enter your password"><br><br>
-
+    <h2>Login</h2>
+    <input type="email" id="email" placeholder="Enter email"><br><br>
+    <input type="password" id="password" placeholder="Enter password"><br><br>
     <button onclick="login()">Login</button>
+    <p>Don't have an account? <a href="auth.html">Register here</a></p>
 
-    <p id="message" style="color: red;"></p>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js"; import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js"; const firebaseConfig = { apiKey: "AIzaSyCkY7eaJEpf3zq6Nn3kai1QsruRlbank7E",
-        authDomain: "bharath-storage.firebaseapp.com", projectId: "bharath-storage", storageBucket: "bharath-storage.appspot.com", messagingSenderId: "885867111825", appId: "1:885867111825:web:a933ba695b17aec7f4a630", measurementId: "G-G4Z272DVWR" };
-        const app = initializeApp(firebaseConfig); const auth = getAuth(app); window.login = () => { const email = document.getElementById("email").value.trim(); const password = document.getElementById("password").value.trim(); const msg = document.getElementById("message");
-        if (!email || !password) { msg.innerText = "Please enter both email and password."; return; } signInWithEmailAndPassword(auth, email, password) .then(() => { msg.innerText = ""; window.location.href = "dashboard.html"; }) .catch((error) => { msg.innerText
-        = "Invalid email or password."; console.error("Login Error:", error); }); };
+    <script>
+        const firebaseConfig = {
+            apiKey: " AIzaSyCkY7eaJEpf3zq6Nn3kai1QsruRlbank7E",
+            authDomain: "bharath-storage.firebaseapp.com",
+            projectId: "bharath-storage",
+            storageBucket: "bharath-storage.appspot.com",
+            messagingSenderId: "885867111825",
+            appId: "1:885867111825:web:a933ba695b17aecf74a630"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        function login() {
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value.trim();
+
+            auth.signInWithEmailAndPassword(email, password)
+                .then(() => {
+                    alert("Login successful!");
+                    window.location.href = "dashboard.html";
+                })
+                .catch((error) => {
+                    alert("Login failed: " + error.message);
+                });
+        }
     </script>
 </body>
 
