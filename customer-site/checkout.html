@@ -7,56 +7,56 @@
 </head>
 
 <body>
-    <h2>Confirm Your Order</h2>
-    <div id="items"></div>
-    <label>Address: <input type="text" id="address" placeholder="Enter delivery address"></label><br><br>
+    <h2>Checkout</h2>
+    <div id="checkoutItems"></div>
+    <h3 id="checkoutTotal"></h3>
     <button onclick="placeOrder()">Place Order</button>
 
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
     <script>
-        const data = JSON.parse(localStorage.getItem("buyNowProduct"));
-        const cart = JSON.parse(localStorage.getItem("cart")) || [];
-        const container = document.getElementById("items");
+        const firebaseConfig = {
+            projectId: "bharath-storage",
+            storageBucket: "bharath-storage.appspot.com",
+            messagingSenderId: "885867111825",
+            appId: "1:885867111825:web:demo",
+            authDomain: "bharath-storage.firebaseapp.com"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        const url = new URLSearchParams(window.location.search);
+        const singleId = url.get("id");
+        const multipleIds = url.get("ids") ? url.get("ids").split(",") : [];
+        const idsToLoad = singleId ? [singleId] : multipleIds;
 
         let total = 0;
-        if (data && data.type === "cart") {
-            cart.forEach(item => {
-                const subtotal = item.quantity * item.price;
-                total += subtotal;
-                container.innerHTML += `
-          <div>
-            <img src="${item.image}" width="100"><br>
-            <strong>${item.name}</strong><br>
-            ${item.details}<br>
-            Qty: ${item.quantity} | ₹${subtotal}
+        const container = document.getElementById("checkoutItems");
+
+        idsToLoad.forEach(id => {
+            db.collection("products").doc(id).get().then(doc => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    const div = document.createElement("div");
+                    div.innerHTML = `
+            <h4>${data.name}</h4>
+            <img src="${data.imageURL}" width="100"><br>
+            Price: ₹${data.price}
             <hr>
-          </div>
-        `;
+          `;
+                    total += parseFloat(data.price);
+                    container.appendChild(div);
+                    document.getElementById("checkoutTotal").innerText = "Total: ₹" + total;
+                }
             });
-        } else if (data) {
-            const subtotal = data.quantity * data.price;
-            total = subtotal;
-            container.innerHTML = `
-        <div>
-          <img src="${data.image}" width="100"><br>
-          <strong>${data.name}</strong><br>
-          ${data.details}<br>
-          Qty: ${data.quantity} | ₹${subtotal}
-        </div>
-      `;
-        }
+        });
 
         function placeOrder() {
-            const address = document.getElementById("address").value;
-            if (!address) return alert("Enter your address");
-            alert("Go to Confirm The Address!\nAddress: " + address + "\nTotal: ₹" + total);
             localStorage.removeItem("cart");
-            localStorage.removeItem("buyNowProduct");
+            alert("Order Placed!");
             window.location.href = "buy.html";
         }
     </script>
-    <script type="module"> import { initializeApp } from "firebase/app"; import { getAnalytics } from "firebase/analytics"; const firebaseConfig = { apiKey: "AIzaSyCs5LHf93O8h8u27RYZ0b12rlMA7epYNIw", authDomain: "lakshmi-gold-covering-shop.firebaseapp.com", projectId: "lakshmi-gold-covering-shop",
-        storageBucket: "lakshmi-gold-covering-shop.firebasestorage.app", messagingSenderId: "169246352285", appId: "1:169246352285:web:addfdd101a31ad66ff4574", measurementId: "G-9TZ7FG1K9Z" }; const app = initializeApp(firebaseConfig); const analytics
-        = getAnalytics(app); </script>
 </body>
 
 </html>
