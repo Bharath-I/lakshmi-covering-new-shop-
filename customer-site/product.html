@@ -1,34 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Product Details</title>
+    <title>Product</title>
     <link rel="stylesheet" href="/customer-site/index.css" />
 </head>
 
 <body>
-    <h2 id="productName"></h2>
-    <div id="productDetails"></div>
+    <h2>Product Details</h2>
+    <div id="productDisplay">Loading...</div>
 
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            projectId: "bharath-storage",
+            storageBucket: "bharath-storage.appspot.com",
+            messagingSenderId: "885867111825",
+            appId: "1:885867111825:web:demo",
+            authDomain: "bharath-storage.firebaseapp.com"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-    <!-- Firebase & Product Logic -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js"; import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js"; const firebaseConfig = { apiKey: "AIzaSyCkY7eaJEpf3zq6Nn3kai1QsruRlbank7E",
-        authDomain: "bharath-storage.firebaseapp.com", projectId: "bharath-storage", storageBucket: "bharath-storage.appspot.com", messagingSenderId: "885867111825", appId: "1:885867111825:web:a933ba695b17aec7f4a630", measurementId: "G-G4Z272DVWR" };
-        const app = initializeApp(firebaseConfig); const db = getFirestore(app); const params = new URLSearchParams(window.location.search); const productId = params.get("id"); async function loadProduct() { if (!productId) { document.getElementById("productDetails").innerHTML
-        = "Product ID not found."; return; } const docRef = doc(db, "products", productId); const docSnap = await getDoc(docRef); if (docSnap.exists()) { const data = docSnap.data(); document.getElementById("productName").innerText = data.name; document.getElementById("productDetails").innerHTML
-        = `
-        <img src="${data.imageURL}" alt="${data.name}" width="300"><br>
-        <p><strong>Details:</strong> ${data.details}</p>
-        <p><strong>Price:</strong> ₹${data.price}</p>
-        <p><strong>Stock:</strong> ${data.stock}</p>
-        <button onclick="addToCart('${productId}')">Add to Cart</button>
-        <button onclick="buyNow('${productId}')">Buy Now</button> `; } else { document.getElementById("productDetails").innerText = "Product not found."; } } // Add to Cart Logic window.addToCart = (id) => { localStorage.setItem("cartProductId", id);
-        window.location.href = "cart.html"; // Buy Now Logic window.buyNow = (id) => { localStorage.setItem("buyNowProductId", id); window.location.href = "checkout.html"; }; // Run the product loader loadProduct();
+        const productId = new URLSearchParams(window.location.search).get("id");
+
+        if (productId) {
+            db.collection("products").doc(productId).get().then(doc => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    document.getElementById("productDisplay").innerHTML = `
+            <h3>${data.name}</h3>
+            <img src="${data.imageURL}" width="200"><br>
+            <p>Price: ₹${data.price}</p>
+            <p>${data.description || ''}</p>
+            <button onclick="buyNow()">Buy Now</button>
+            <button onclick="addToCart()">Add to Cart</button>
+          `;
+                } else {
+                    document.getElementById("productDisplay").textContent = "Product not found.";
+                }
+            });
+        }
+
+        function buyNow() {
+            window.location.href = `checkout.html?id=${productId}`;
+        }
+
+        function addToCart() {
+            let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+            if (!cart.includes(productId)) {
+                cart.push(productId);
+                localStorage.setItem("cart", JSON.stringify(cart));
+            }
+            window.location.href = "cart.html";
+        }
     </script>
-
 </body>
 
 </html>
