@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Buy Product</title>]
+    <link rel="stylesheet" href="/customer-site/index.css" />
+</head>
+
+<body>
+    <h2>Confirm The Delivery Address
+    </h2>
+    <div id="confirm"></div>
+
+    <h3>Delivery Address</h3>
+    <input type="text" id="name" placeholder="Name">
+    <input type="number" id="phone" placeholder="Phone">
+    <input type="text" id="address" placeholder="Address">
+    <input type="text" id="landmark" placeholder="Landmark">
+    <input type="number" id="pincode" placeholder="Pincode">
+    <button onclick="confirmOrder()">Confirm Order</button>
+
+    <script>
+        const product = JSON.parse(localStorage.getItem('buyNowProduct'));
+        const confirmDiv = document.getElementById('confirm');
+
+        if (product) {
+            confirmDiv.innerHTML = `
+        <img src="${product.image}" width="150">
+        <p>${product.name}</p>
+        <p>₹${product.price} × ${product.quantity}</p>
+      `;
+        }
+
+        function confirmOrder() {
+            const userDetails = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                address: document.getElementById('address').value
+            };
+            localStorage.setItem('deliveryInfo', JSON.stringify(userDetails));
+            alert("Go To Payment!");
+            window.location.href = 'customer-site/paytm.html';
+        }
+    </script>
+    <script type="module"> import { initializeApp } from "firebase/app"; import { getAnalytics } from "firebase/analytics"; const firebaseConfig = { apiKey: "AIzaSyCs5LHf93O8h8u27RYZ0b12rlMA7epYNIw", authDomain: "lakshmi-gold-covering-shop.firebaseapp.com", projectId: "lakshmi-gold-covering-shop",
+        storageBucket: "lakshmi-gold-covering-shop.firebasestorage.app", messagingSenderId: "169246352285", appId: "1:169246352285:web:addfdd101a31ad66ff4574", measurementId: "G-9TZ7FG1K9Z" }; const app = initializeApp(firebaseConfig); const analytics
+        = getAnalytics(app); </script>
+</body>
+
+</html>

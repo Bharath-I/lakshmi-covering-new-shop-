@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Admin - Add Product</title>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-storage-compat.js"></script>
+    <link rel="stylesheet" href="/customer-site/index.css" />
+
+</head>
+
+<body>
+    <form id="addProductForm">
+        <input type="text" id="productName" placeholder="Product Name" required><br>
+        <input type="text" id="productPrice" placeholder="Product Price" required><br>
+        <textarea id="productDescription" placeholder="Product Description" required></textarea><br>
+        <input type="file" id="productImage" accept="image/*" required><br>
+        <button type="submit">Add Product</button>
+    </form>
+    <script>
+        const form = document.getElementById("addProductForm");
+        form.addEventListener("submit", async function(e) {
+            e.preventDefault();
+            const name = document.getElementById("productName").value;
+            const price = document.getElementById("productPrice").value;
+            const description = document.getElementById("productDescription").value;
+            const imageFile = document.getElementById("productImage").files[0];
+            const reader = newFileReader();
+            reader.onload = async
+
+
+        });
+    </script>
+</body>
+
+</html>
