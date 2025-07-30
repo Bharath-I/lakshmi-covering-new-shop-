@@ -1,31 +1,28 @@
+<!-- approval.html -->
 <!DOCTYPE html>
 <html>
 
 <head>
-    <title>Product Approvals</title>
+    <title>Approve Products</title>
     <link rel="stylesheet" href="/customer-site/index.css" />
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 </head>
 
 <body>
-    <h2>Pending Approvals</h2>
-    <div id="approvalContainer"></div>
-
+    <h2>Pending Products</h2>
+    <div id="pendingProducts"></div>
 
     <script type="module">
-        const firebaseConfig = { apiKey: "AIzaSyCkY7eaJEpf3zq6Nn3kai1QsruRlbank7E", authDomain: "bharath-storage.firebaseapp.com", projectId: "bharath-storage", storageBucket: "bharath-storage.firebasestorage.app", messagingSenderId: "885867111825", appId: "1:885867111825:web:a933ba695b17aec7f4a630",
-        measurementId: "G-G4Z272DVWR" }; const app = initializeApp(firebaseConfig); const analytics = getAnalytics(app);
-    </script> div.innerHTML = `
-    <h3>${data.name}</h3>
-    <img src="${data.image}" width="150" /><br>
-    <p><strong>Price:</strong> ₹${data.price}</p>
-    <p><strong>Description:</strong> ${data.description}</p>
-    <button onclick="approveProduct('${id}')">Approve Product</button>
-    <hr> `; approvalContainer.appendChild(div); }); window.approveProduct = async function (productId) { await updateDoc(doc(db, "products", productId), { approved: true }); alert("Product approved successfully."); location.reload(); };
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js"; import { getFirestore, collection, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js"; const firebaseConfig = { apiKey:
+        "AIzaSyCkY7eaJEpf3zq6Nn3kai1QsruRlbank7E", authDomain: "bharath-storage.firebaseapp.com", projectId: "bharath-storage", storageBucket: "bharath-storage.appspot.com", messagingSenderId: "885867111825", appId: "1:885867111825:web:a933ba695b17aec7f4a630",
+        measurementId: "G-G4Z272DVWR" }; const app = initializeApp(firebaseConfig); const db = getFirestore(app); const pendingProductsDiv = document.getElementById("pendingProducts"); const loadPending = async () => { const snapshot = await getDocs(collection(db,
+        "products")); snapshot.forEach((docSnap) => { const data = docSnap.data(); if (!data.approved) { const div = document.createElement("div"); div.innerHTML = `
+        <img src="${data.imageURL}" width="100"><br>
+        <strong>${data.name}</strong><br> ${data.details}
+        <br> ₹${data.price}
+        <br>
+        <button onclick="approveProduct('${docSnap.id}')">Approve</button>
+        <hr> `; pendingProductsDiv.appendChild(div); } }); }; window.approveProduct = async (id) => { const docRef = doc(db, "products", id); await updateDoc(docRef, { approved: true }); alert("Product approved!"); location.reload(); }; loadPending();
     </script>
-
-
 </body>
 
 </html>
