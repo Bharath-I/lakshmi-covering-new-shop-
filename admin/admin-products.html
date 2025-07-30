@@ -1,37 +1,29 @@
+<!-- admin-products.html -->
 <!DOCTYPE html>
 <html>
 
 <head>
     <title>Admin - Add Product</title>
-
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-storage-compat.js"></script>
     <link rel="stylesheet" href="/customer-site/index.css" />
-
 </head>
 
 <body>
-    <form id="addProductForm">
-        <input type="text" id="productName" placeholder="Product Name" required><br>
-        <input type="text" id="productPrice" placeholder="Product Price" required><br>
-        <textarea id="productDescription" placeholder="Product Description" required></textarea><br>
-        <input type="file" id="productImage" accept="image/*" required><br>
-        <button type="submit">Add Product</button>
-    </form>
-    <script>
-        const form = document.getElementById("addProductForm");
-        form.addEventListener("submit", async function(e) {
-            e.preventDefault();
-            const name = document.getElementById("productName").value;
-            const price = document.getElementById("productPrice").value;
-            const description = document.getElementById("productDescription").value;
-            const imageFile = document.getElementById("productImage").files[0];
-            const reader = newFileReader();
-            reader.onload = async
+    <h2>Add Product</h2>
+    <input type="text" id="productName" placeholder="Product Name"><br>
+    <textarea id="productDetails" placeholder="Product Details"></textarea><br>
+    <input type="number" id="productPrice" placeholder="Price"><br>
+    <input type="number" id="productStock" placeholder="Stock"><br>
+    <input type="file" id="productImage"><br>
+    <button onclick="addProduct()">Add Product</button>
 
-
-        });
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js"; import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js"; import { getStorage, ref, uploadBytes, getDownloadURL
+        } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-storage.js"; const firebaseConfig = { apiKey: "AIzaSyCkY7eaJEpf3zq6Nn3kai1QsruRlbank7E", authDomain: "bharath-storage.firebaseapp.com", projectId: "bharath-storage", storageBucket: "bharath-storage.appspot.com",
+        messagingSenderId: "885867111825", appId: "1:885867111825:web:a933ba695b17aec7f4a630", measurementId: "G-G4Z272DVWR" }; const app = initializeApp(firebaseConfig); const db = getFirestore(app); const storage = getStorage(app); window.addProduct
+        = async () => { const name = document.getElementById('productName').value.trim(); const details = document.getElementById('productDetails').value.trim(); const price = parseFloat(document.getElementById('productPrice').value); const stock = parseInt(document.getElementById('productStock').value);
+        const imageFile = document.getElementById('productImage').files[0]; if (!name || !details || !price || !stock || !imageFile) { alert("Please fill all fields."); return; } try { const imageRef = ref(storage, 'products/' + imageFile.name); await
+        uploadBytes(imageRef, imageFile); const imageURL = await getDownloadURL(imageRef); await addDoc(collection(db, "products"), { name, details, price, stock, imageURL, approved: false }); alert("Product submitted for approval!"); window.location.href
+        = "approval.html"; } catch (error) { console.error("Error:", error); alert("Failed to add product."); } };
     </script>
 </body>
 
