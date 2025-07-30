@@ -1,33 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login - Lakshmi Gold Covering</title>
-    <link rel="stylesheet" href="/customer-site/index.css" />
-
+    <title>Login</title>
 </head>
 
 <body>
-    <center>
-        <h2>Login</h2>
-        <form id="loginForm">
-            <input type="email" id="email" placeholder="Enter email" required /><br/>
-            <input type="password" id="password" placeholder="Enter password" required /><br/>
-            <button type="submit">Login</button>
-    </center>
-    </form>
-    <p id="error" style="color: red;"></p>
+    <h2>Login Page</h2>
+    <link rel="stylesheet" href="/customer-site/index.css" />
 
-    <!-- Firebase Script -->
+    <input type="email" id="email" placeholder="Enter your email"><br><br>
+    <input type="password" id="password" placeholder="Enter your password"><br><br>
+
+    <button onclick="login()">Login</button>
+
+    <p id="message" style="color: red;"></p>
+
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js"; import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics.js"; import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-        const firebaseConfig = { apiKey: "AIzaSyCs5LHf93O8h8u27RYZ0b12rlMA7epYNIw", authDomain: "lakshmi-gold-covering-shop.firebaseapp.com", projectId: "lakshmi-gold-covering-shop", storageBucket: "lakshmi-gold-covering-shop.appspot.com", messagingSenderId:
-        "169246352285", appId: "1:169246352285:web:addfdd101a31ad66ff4574", measurementId: "G-9TZ7FG1K9Z" }; // Initialize Firebase const app = initializeApp(firebaseConfig); getAnalytics(app); const auth = getAuth(app); // Handle login const loginForm
-        document.getElementById("loginForm"); const errorElement = document.getElementById("error"); loginForm.addEventListener("submit", (e) => { e.preventDefault(); const email = document.getElementById("email").value; const password = document.getElementById("password").value;
-        signInWithEmailAndPassword(auth, email, password) .then(() => { window.location.href = "dashboard.html"; }) .catch((error) => { errorElement.textContent = "❌ Invalid email or password."; }); });
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js"; import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js"; const firebaseConfig = { apiKey: "AIzaSyCkY7eaJEpf3zq6Nn3kai1QsruRlbank7E",
+        authDomain: "bharath-storage.firebaseapp.com", projectId: "bharath-storage", storageBucket: "bharath-storage.appspot.com", messagingSenderId: "885867111825", appId: "1:885867111825:web:a933ba695b17aec7f4a630", measurementId: "G-G4Z272DVWR" };
+        const app = initializeApp(firebaseConfig); const auth = getAuth(app); window.login = () => { const email = document.getElementById("email").value.trim(); const password = document.getElementById("password").value.trim(); const msg = document.getElementById("message");
+        if (!email || !password) { msg.innerText = "Please enter both email and password."; return; } signInWithEmailAndPassword(auth, email, password) .then(() => { msg.innerText = ""; window.location.href = "dashboard.html"; }) .catch((error) => { msg.innerText
+        = "Invalid email or password."; console.error("Login Error:", error); }); };
     </script>
 </body>
 
