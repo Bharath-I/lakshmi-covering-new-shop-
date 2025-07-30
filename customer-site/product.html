@@ -1,96 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Loading...</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Details</title>
     <link rel="stylesheet" href="/customer-site/index.css" />
-    <!-- Will be replaced with product name -->
-    <style>
-        .out-of-stock {
-            color: red;
-            font-weight: bold;
-        }
-        
-        .in-stock {
-            color: green;
-            font-weight: bold;
-        }
-        
-        .btn {
-            padding: 10px 20px;
-            margin: 5px;
-            background-color: gold;
-            border: none;
-            cursor: pointer;
-        }
-        
-        .btn:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-    </style>
 </head>
 
 <body>
-    <div id="product-container"></div>
-    <script type="module"> import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js"; import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics.js";const firebaseConfig = { apiKey: "AIzaSyCQlVTLJ0bQJSfZhXixcdMP_MmSLtHmchc",
-        authDomain: "lakshmi-chidambaram-gold.firebaseapp.com", projectId: "lakshmi-chidambaram-gold", storageBucket: "lakshmi-chidambaram-gold.firebasestorage.app", messagingSenderId: "558117872149", appId: "1:558117872149:web:49270f29141b5bd7f0e41c",
-        measurementId: "G-2832JXWHQG" }; const app = initializeApp(firebaseConfig); const analytics = getAnalytics(app);
+    <h2 id="productName"></h2>
+    <div id="productDetails"></div>
+
+
+    <!-- Firebase & Product Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js"; import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js"; const firebaseConfig = { apiKey: "AIzaSyCkY7eaJEpf3zq6Nn3kai1QsruRlbank7E",
+        authDomain: "bharath-storage.firebaseapp.com", projectId: "bharath-storage", storageBucket: "bharath-storage.appspot.com", messagingSenderId: "885867111825", appId: "1:885867111825:web:a933ba695b17aec7f4a630", measurementId: "G-G4Z272DVWR" };
+        const app = initializeApp(firebaseConfig); const db = getFirestore(app); const params = new URLSearchParams(window.location.search); const productId = params.get("id"); async function loadProduct() { if (!productId) { document.getElementById("productDetails").innerHTML
+        = "Product ID not found."; return; } const docRef = doc(db, "products", productId); const docSnap = await getDoc(docRef); if (docSnap.exists()) { const data = docSnap.data(); document.getElementById("productName").innerText = data.name; document.getElementById("productDetails").innerHTML
+        = `
+        <img src="${data.imageURL}" alt="${data.name}" width="300"><br>
+        <p><strong>Details:</strong> ${data.details}</p>
+        <p><strong>Price:</strong> ₹${data.price}</p>
+        <p><strong>Stock:</strong> ${data.stock}</p>
+        <button onclick="addToCart('${productId}')">Add to Cart</button>
+        <button onclick="buyNow('${productId}')">Buy Now</button> `; } else { document.getElementById("productDetails").innerText = "Product not found."; } } // Add to Cart Logic window.addToCart = (id) => { localStorage.setItem("cartProductId", id);
+        window.location.href = "cart.html"; // Buy Now Logic window.buyNow = (id) => { localStorage.setItem("buyNowProductId", id); window.location.href = "checkout.html"; }; // Run the product loader loadProduct();
     </script>
-
-
-    <script>
-        const selectedProduct = JSON.parse(localStorage.getItem('selectedProduct'));
-
-        if (selectedProduct) {
-            // Set the browser tab title to product name
-            document.title = selectedProduct.name;
-
-            const container = document.getElementById('product-container');
-            const isInStock = selectedProduct.stock && selectedProduct.stock > 0;
-
-            container.innerHTML = `
-        <h2>${selectedProduct.name}</h2>
-        <img src="${selectedProduct.image}" width="200" />
-        <p>Price: ₹${selectedProduct.price}</p>
-        <p>${selectedProduct.details}</p>
-        <p class="${isInStock ? 'in-stock' : 'out-of-stock'}">
-          ${isInStock ? 'In Stock' : 'Out of Stock'}
-        </p>
-
-        ${isInStock ? `
-          <label>Quantity:</label>
-          <input type="number" id="quantity" value="1" min="1" max="${selectedProduct.stock}" /><br>
-          <button class="btn" onclick="addToCart()">Add to Cart</button>
-          <button class="btn" onclick="buyNow()">Buy Now</button>
-        ` : ''}
-      `;
-    }
-
-    function addToCart() {
-      const quantity = parseInt(document.getElementById('quantity').value);
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-      const existing = cart.find(p => p.id === selectedProduct.id);
-      if (existing) {
-        existing.quantity += quantity;
-      } else {
-        selectedProduct.quantity = quantity;
-        cart.push(selectedProduct);
-      }
-
-      localStorage.setItem('cart', JSON.stringify(cart));
-      alert("Added to cart");
-    }
-
-    function buyNow() {
-      const quantity = parseInt(document.getElementById('quantity').value);
-      selectedProduct.quantity = quantity;
-      localStorage.setItem('buyNowProduct', JSON.stringify(selectedProduct));
-      window.location.href = 'checkout.html';
-    }
-    </script>
-
 
 </body>
 
